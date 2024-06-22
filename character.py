@@ -3,14 +3,15 @@ import constants
 import math
 
 class Character:
-    def __init__(self, x: int, y: int, animation_list: list[list[pygame.Surface]]) -> None:
+    def __init__(self, x: int, y: int, mob_animations: list[list[pygame.Surface]], char_type) -> None:
+        self.char_type = char_type
         self.flip = False
-        self.animation_list = animation_list
+        self.animation_list = mob_animations[char_type]
         self.frame_index = 0
         self.action = 0 # 0: Idle, 1: Run
         self.update_time = pygame.time.get_ticks()
         self.running = False
-        self.image = animation_list[self.action][self.frame_index]
+        self.image = self.animation_list[self.action][self.frame_index]
         self.rect = pygame.Rect(0, 0, 40, 40)
         self.rect.center = (x, y)
 
@@ -62,5 +63,8 @@ class Character:
     
     def draw(self, surface: pygame.Surface) -> None:
         flipped_image = pygame.transform.flip(self.image, self.flip, False)
-        surface.blit(flipped_image, self.rect)
+        if self.char_type == 0:
+            surface.blit(flipped_image, (self.rect.x, self.rect.y - constants.SCALE * constants.OFFSET))
+        else:
+            surface.blit(flipped_image, self.rect)
         pygame.draw.rect(surface, constants.RED, self.rect, 1)
